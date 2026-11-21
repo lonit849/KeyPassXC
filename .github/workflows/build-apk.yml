@@ -44,7 +44,12 @@ jobs:
             buildozer-
 
       - name: Build APK with Buildozer
+        env:
+          ACCEPT_SDK_LICENSE: "y"
         run: |
+          mkdir -p ~/.buildozer/android/platform/android-sdk
+          echo "y" | buildozer -v android debug || true
+          # Second run after licenses are accepted
           buildozer -v android debug
 
       - name: Upload APK
