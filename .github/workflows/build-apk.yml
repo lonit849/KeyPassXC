@@ -43,13 +43,21 @@ jobs:
           restore-keys: |
             buildozer-
 
-      - name: Build APK with Buildozer
-        env:
-          ACCEPT_SDK_LICENSE: "y"
+      - name: Install Android SDK cmdline-tools
         run: |
-          mkdir -p ~/.buildozer/android/platform/android-sdk
-          echo "y" | buildozer -v android debug || true
-          # Second run after licenses are accepted
+          mkdir -p ~/.buildozer/android/platform/android-sdk/cmdline-tools
+          cd /tmp
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdtools.zip
+          unzip -q cmdtools.zip -d /tmp/cmdtools
+          mkdir -p ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest
+          cp -r /tmp/cmdtools/cmdline-tools/* ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/
+          # Buildozer still looks in old location, so make a link for it
+          mkdir -p ~/.buildozer/android/platform/android-sdk/tools/bin
+          ln -sf ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager ~/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager
+          yes | ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
+
+      - name: Build APK with Buildozer
+        run: |
           buildozer -v android debug
 
       - name: Upload APK
