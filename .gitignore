@@ -1,0 +1,16 @@
+# Vault files - NEVER push these!
+vault.dat
+vault.dat.bak
+*.dat
+*.hidden
+
+# Build files
+keypass
+keypass.exe
+
+# Backups
+KeyPassBackup/
+.keypass_backup/
+
+# OS
+.DS_Store
